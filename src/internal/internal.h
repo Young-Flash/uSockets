@@ -169,6 +169,8 @@ void us_internal_ssl_socket_context_on_connect_error(struct us_internal_ssl_sock
 struct us_listen_socket_t *us_internal_ssl_socket_context_listen(struct us_internal_ssl_socket_context_t *context,
     const char *host, int port, int options, int socket_ext_size);
 
+struct us_listen_socket_t *us_internal_ssl_socket_context_listen_unix(struct us_internal_ssl_socket_context_t *context, const char *path, int options, int socket_ext_size);
+
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_connect(struct us_internal_ssl_socket_context_t *context,
     const char *host, int port, const char *source_host, int options, int socket_ext_size);
 

@@ -440,6 +440,37 @@ LIBUS_SOCKET_DESCRIPTOR bsd_create_listen_socket(const char *host, int port, int
     return listenFd;
 }
 
+#include <sys/un.h>
+#include <stddef.h>
+#include <sys/stat.h>
+LIBUS_SOCKET_DESCRIPTOR bsd_create_listen_socket_unix(const char *path, int options) {
+
+    LIBUS_SOCKET_DESCRIPTOR listenFd = LIBUS_SOCKET_ERROR;
+
+    listenFd = bsd_create_socket(AF_LOCAL, SOCK_STREAM, 0);
+
+    if (listenFd == LIBUS_SOCKET_ERROR) {
+        return LIBUS_SOCKET_ERROR;
+    }
+
+    // 700 permission by default
+    fchmod(listenFd, S_IRWXU);
+
+    struct sockaddr_un server_address;
+    memset(&server_address, 0, sizeof(server_address));
+    server_address.sun_family = AF_UNIX;
+    strcpy(server_address.sun_path, path);
+    int size = offsetof(struct sockaddr_un, sun_path) + strlen(server_address.sun_path);
+    unlink(path);
+
+    if (bind(listenFd, (struct sockaddr *)&server_address, size) || listen(listenFd, 512)) {
+        bsd_close_socket(listenFd);
+        return LIBUS_SOCKET_ERROR;
+    }
+
+    return listenFd;
+}
+
 LIBUS_SOCKET_DESCRIPTOR bsd_create_udp_socket(const char *host, int port) {
     struct addrinfo hints, *result;
     memset(&hints, 0, sizeof(struct addrinfo));

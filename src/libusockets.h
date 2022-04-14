@@ -169,6 +169,9 @@ WIN32_EXPORT void *us_socket_context_ext(int ssl, struct us_socket_context_t *co
 WIN32_EXPORT struct us_listen_socket_t *us_socket_context_listen(int ssl, struct us_socket_context_t *context,
     const char *host, int port, int options, int socket_ext_size);
 
+WIN32_EXPORT struct us_listen_socket_t *us_socket_context_listen_unix(int ssl, struct us_socket_context_t *context,
+                                                                      const char *path, int options, int socket_ext_size);
+
 /* listen_socket.c/.h */
 WIN32_EXPORT void us_listen_socket_close(int ssl, struct us_listen_socket_t *ls);
 

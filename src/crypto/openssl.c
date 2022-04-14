@@ -516,12 +516,7 @@ SSL_CTX *create_ssl_context_from_options(struct us_socket_context_options_t opti
         }
     }
 
-    if (options.ssl_ciphers) {
-        if (SSL_CTX_set_cipher_list(ssl_context, options.ssl_ciphers) != 1) {
-            free_ssl_context(ssl_context);
-            return NULL;
-        }
-    }
+
 
     /* This must be free'd with free_ssl_context, not SSL_CTX_free */
     return ssl_context;
@@ -655,6 +650,10 @@ void us_internal_ssl_socket_context_free(struct us_internal_ssl_socket_context_t
 
 struct us_listen_socket_t *us_internal_ssl_socket_context_listen(struct us_internal_ssl_socket_context_t *context, const char *host, int port, int options, int socket_ext_size) {
     return us_socket_context_listen(0, &context->sc, host, port, options, sizeof(struct us_internal_ssl_socket_t) - sizeof(struct us_socket_t) + socket_ext_size);
+}
+
+struct us_listen_socket_t *us_internal_ssl_socket_context_listen_unix(struct us_internal_ssl_socket_context_t *context, const char *path, int options, int socket_ext_size) {
+    return us_socket_context_listen_unix(0, &context->sc, path, options, sizeof(struct us_internal_ssl_socket_t) - sizeof(struct us_socket_t) + socket_ext_size);
 }
 
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_connect(struct us_internal_ssl_socket_context_t *context, const char *host, int port, const char *source_host, int options, int socket_ext_size) {
